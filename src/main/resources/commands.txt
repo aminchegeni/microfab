@@ -1,0 +1,19 @@
+mkdir src
+touch src/empty.jar
+peer lifecycle chaincode package hello.tgz --path ./src --lang java --label hello_1.0
+
+# plain
+FABRIC_LOGGING_SPEC=debug CORE_PEER_LOCALMSPID=matMSP CORE_PEER_MSPCONFIGPATH=/home/microfab/data/admin-mat CORE_PEER_ADDRESS=matpeer-api.127-0-0-1.nip.io:8080 peer lifecycle chaincode install hello.tgz
+FABRIC_LOGGING_SPEC=debug CORE_PEER_LOCALMSPID=matMSP CORE_PEER_MSPCONFIGPATH=/home/microfab/data/admin-mat CORE_PEER_ADDRESS=matpeer-api.127-0-0-1.nip.io:8080 peer lifecycle chaincode approveformyorg --channelID tokenization --name hello --version 1.0 --package-id $(peer lifecycle chaincode calculatepackageid hello.tgz) --sequence 1
+FABRIC_LOGGING_SPEC=debug CORE_PEER_LOCALMSPID=matMSP CORE_PEER_MSPCONFIGPATH=/home/microfab/data/admin-mat CORE_PEER_ADDRESS=matpeer-api.127-0-0-1.nip.io:8080 peer lifecycle chaincode approveformyorg --channelID tokenization --name hello --version 1.0 --package-id hello_1.0 --sequence 1
+FABRIC_LOGGING_SPEC=debug CORE_PEER_LOCALMSPID=matMSP CORE_PEER_MSPCONFIGPATH=/home/microfab/data/admin-mat CORE_PEER_ADDRESS=matpeer-api.127-0-0-1.nip.io:8080 peer lifecycle chaincode checkcommitreadiness --channelID tokenization --name hello --version 1.0 --sequence 1 --output json
+FABRIC_LOGGING_SPEC=debug CORE_PEER_LOCALMSPID=matMSP CORE_PEER_MSPCONFIGPATH=/home/microfab/data/admin-mat CORE_PEER_ADDRESS=matpeer-api.127-0-0-1.nip.io:8080 peer lifecycle chaincode commit --channelID tokenization --name hello --version 1.0 --sequence 1
+
+# tls
+FABRIC_LOGGING_SPEC=debug CORE_PEER_LOCALMSPID=matMSP FABRIC_CFG_PATH=/home/microfab/data/peer-mat/config CORE_PEER_MSPCONFIGPATH=/home/microfab/data/admin-mat CORE_PEER_ADDRESS=matpeer-api.127-0-0-1.nip.io:8080 peer lifecycle chaincode approveformyorg --channelID tokenization --name hello --version 1.0 --package-id hello_1.0 --sequence 1 --tls --cafile /home/microfab/data/orderer/tls/ca.pem
+FABRIC_LOGGING_SPEC=debug CORE_PEER_LOCALMSPID=matMSP FABRIC_CFG_PATH=/home/microfab/data/peer-mat/config CORE_PEER_ADDRESS=matpeer-api.127-0-0-1.nip.io:8080 peer lifecycle chaincode checkcommitreadiness --channelID tokenization --name hello --version 1.0 --sequence 1 --output json
+FABRIC_LOGGING_SPEC=debug CORE_PEER_LOCALMSPID=matMSP FABRIC_CFG_PATH=/home/microfab/data/peer-mat/config CORE_PEER_ADDRESS=matpeer-api.127-0-0-1.nip.io:8080 peer lifecycle chaincode commit --channelID tokenization --name hello --version 1.0 --sequence 1 --tls --cafile /home/microfab/data/orderer/tls/ca.pem
+
+#FABRIC_LOGGING_SPEC=debug CORE_PEER_LOCALMSPID=matMSP FABRIC_CFG_PATH=/home/microfab/data/peer-mat/config CORE_PEER_ADDRESS=matpeer-api.127-0-0-1.nip.io:8080 peer chaincode invoke --waitForEvent --channelID tokenization --name hello -c '{"function":"createhello", "Args":["10001", "amin"]}'
+
+FABRIC_LOGGING_SPEC=debug FABRIC_CFG_PATH=/home/microfab/data/peer-mat/config CORE_PEER_ADDRESS=matpeer-api.127-0-0-1.nip.io:8080 peer chaincode query --channelID tokenization --name hello -c '{"function":"say", "Args":["amin"]}'
