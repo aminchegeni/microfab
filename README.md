@@ -59,6 +59,7 @@ Fabino abstracts all of this:
 ## 🚀 Quick Example
 
 ```java
+
 @Microfab(
         image = "hyperledger-labs/microfab",
         domain = "example.com",
@@ -100,3 +101,21 @@ class SampleTest {
         Assertions.assertEquals("{\"name\":\"amin\"}", new String(result, UTF_8));
     }
 }
+```
+
+---
+
+## 🎯 Roadmap
+
+Fabino is actively evolving. Planned features and improvements include:
+
+- [x] **Bootstrap Fabric network with Microfab + Testcontainers.**
+- [x] **Full chaincode lifecycle support**: `package` → `install` → `approve` → `commit`.
+- [x] **Chaincode-as-a-Service (CCaaS) support.**
+- [x] **Inject `Gateway` instance into JUnit 5 test classes.**
+- [ ] **Inject other Fabric objects: `Network`, `Contract`, etc.**
+- [ ] **Support multiple chaincode builders for flexible deployment strategies.**
+- [ ] **Publish Fabino to Maven Central.**
+- [ ] **Add more documentation and example scenarios.**
+- [ ] **Enhance logging, observability, and debugging features.**
+- [ ] **Add Spring test framework support.**
