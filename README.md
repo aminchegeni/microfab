@@ -1,4 +1,4 @@
-# Fabino 🧪⚡️
+# Fabino-Test 🧪⚡️
 
 *A lightweight testing framework for Hyperledger Fabric, powered by JUnit 5, Testcontainers, and Microfab.*
 
@@ -9,9 +9,9 @@
 
 ---
 
-## ✨ What is Fabino?
+## ✨ What is Fabino-Test?
 
-**Fabino** is a Java testing library designed to make writing **unit and integration tests for Hyperledger Fabric
+**Fabino-Test** is a Java testing library designed to make writing **unit and integration tests for Hyperledger Fabric
 chaincode** easy, fast, and reproducible.
 
 It combines:
@@ -20,12 +20,12 @@ It combines:
 - **Testcontainers** → Automatically start and manage a Microfab Docker container.
 - **Microfab** → Bootstrap a full Hyperledger Fabric network using a simple JSON/YAML config.
 
-### Why Fabino?
+### Why Fabino-Test?
 
 Writing tests for Hyperledger Fabric chaincode is usually complex: you need a running network, multiple organizations,
 channels, and properly installed chaincode.
 
-Fabino abstracts all of this:
+Fabino-Test abstracts all of this:
 
 - Spin up a Fabric network **on-demand in your tests**.
 - Install, approve, and commit chaincodes automatically.
@@ -34,7 +34,7 @@ Fabino abstracts all of this:
 
 ---
 
-## 🛠 How Fabino Works
+## 🛠 How Fabino-Test Works
 
 1. **Configuration**  
    Provide
@@ -46,7 +46,7 @@ Fabino abstracts all of this:
    with [@Microfab](src/main/java/ir/co/isc/spbp/blockchain/microfab/Microfab.java).
 
 3. **Chaincode Lifecycle**  
-   Fabino handles the full chaincode lifecycle automatically:
+   Fabino-Test handles the full chaincode lifecycle automatically:
     - Package → Install → Approve → Commit
 
 4. **Dependency Injection**  
@@ -91,7 +91,7 @@ Fabino abstracts all of this:
 class SampleTest {
 
     @Msp(org = "Org1")
-    private Gateway gateway; // injected by Fabino 🎉
+    private Gateway gateway; // injected by Fabino-Test 🎉
 
     @Test
     void test() throws GatewayException {
@@ -107,7 +107,7 @@ class SampleTest {
 
 ## 🎯 Roadmap
 
-Fabino is actively evolving. Planned features and improvements include:
+Fabino-Test is actively evolving. Planned features and improvements include:
 
 - [x] **Bootstrap Fabric network with Microfab + Testcontainers.**
 - [x] **Full chaincode lifecycle support**: `package` → `install` → `approve` → `commit`.
@@ -115,7 +115,7 @@ Fabino is actively evolving. Planned features and improvements include:
 - [x] **Inject `Gateway` instance into JUnit 5 test classes.**
 - [ ] **Inject other Fabric objects: `Network`, `Contract`, etc.**
 - [ ] **Support multiple chaincode builders for flexible deployment strategies.**
-- [ ] **Publish Fabino to Maven Central.**
+- [ ] **Publish Fabino-Test to Maven Central.**
 - [ ] **Add more documentation and example scenarios.**
 - [ ] **Enhance logging, observability, and debugging features.**
 - [ ] **Add Spring test framework support.**
