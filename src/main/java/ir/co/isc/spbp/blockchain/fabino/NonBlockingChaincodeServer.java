@@ -1,4 +1,4 @@
-package ir.co.isc.spbp.blockchain.microfab;
+package ir.co.isc.spbp.blockchain.fabino;
 
 import org.hyperledger.fabric.shim.*;
 

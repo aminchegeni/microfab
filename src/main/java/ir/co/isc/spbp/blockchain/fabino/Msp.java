@@ -1,6 +1,6 @@
-package ir.co.isc.spbp.blockchain.microfab;
+package ir.co.isc.spbp.blockchain.fabino;
 
-import ir.co.isc.spbp.blockchain.microfab.model.Config;
+import ir.co.isc.spbp.blockchain.fabino.model.Config;
 
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;

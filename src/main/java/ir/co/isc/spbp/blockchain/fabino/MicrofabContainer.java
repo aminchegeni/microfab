@@ -1,6 +1,6 @@
-package ir.co.isc.spbp.blockchain.microfab;
+package ir.co.isc.spbp.blockchain.fabino;
 
-import ir.co.isc.spbp.blockchain.microfab.model.Config;
+import ir.co.isc.spbp.blockchain.fabino.model.Config;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
@@ -17,7 +17,7 @@ import java.security.MessageDigest;
 import java.util.HexFormat;
 import java.util.Set;
 
-import static ir.co.isc.spbp.blockchain.microfab.utils.Util.Time.parse;
+import static ir.co.isc.spbp.blockchain.fabino.utils.Util.Time.parse;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**

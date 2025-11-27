@@ -1,10 +1,10 @@
-package ir.co.isc.spbp.blockchain.microfab.model;
+package ir.co.isc.spbp.blockchain.fabino.model;
 
-import ir.co.isc.spbp.blockchain.microfab.Microfab;
+import ir.co.isc.spbp.blockchain.fabino.Microfab;
 import lombok.Builder;
 import lombok.Data;
 
-import static ir.co.isc.spbp.blockchain.microfab.model.Config.Chaincode;
+import static ir.co.isc.spbp.blockchain.fabino.model.Config.Chaincode;
 
 /**
  * Represents the {@code metadata.json} file that is packaged alongside

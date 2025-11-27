@@ -1,7 +1,7 @@
-package ir.co.isc.spbp.blockchain.microfab;
+package ir.co.isc.spbp.blockchain.fabino;
 
-import ir.co.isc.spbp.blockchain.microfab.builder.CcBuilder;
-import ir.co.isc.spbp.blockchain.microfab.builder.CcaasBuilder;
+import ir.co.isc.spbp.blockchain.fabino.builder.CcBuilder;
+import ir.co.isc.spbp.blockchain.fabino.builder.CcaasBuilder;
 import lombok.Getter;
 import org.junit.jupiter.api.extension.ExtendWith;
 

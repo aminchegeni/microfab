@@ -1,7 +1,7 @@
 package org.testcontainers.containers;
 
-import ir.co.isc.spbp.blockchain.microfab.MicrofabContainer;
-import ir.co.isc.spbp.blockchain.microfab.model.Config;
+import ir.co.isc.spbp.blockchain.fabino.MicrofabContainer;
+import ir.co.isc.spbp.blockchain.fabino.model.Config;
 import lombok.experimental.UtilityClass;
 
 /**

@@ -1,11 +1,11 @@
-package ir.co.isc.spbp.blockchain.microfab.model;
+package ir.co.isc.spbp.blockchain.fabino.model;
 
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import org.json.JSONPropertyName;
 
-import static ir.co.isc.spbp.blockchain.microfab.model.Config.Chaincode;
+import static ir.co.isc.spbp.blockchain.fabino.model.Config.Chaincode;
 
 /**
  * Represents the {@code connection.json} file used in a chaincode package

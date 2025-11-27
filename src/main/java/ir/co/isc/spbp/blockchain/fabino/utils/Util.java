@@ -1,4 +1,4 @@
-package ir.co.isc.spbp.blockchain.microfab.utils;
+package ir.co.isc.spbp.blockchain.fabino.utils;
 
 import lombok.experimental.UtilityClass;
 

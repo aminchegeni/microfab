@@ -1,10 +1,10 @@
-package ir.co.isc.spbp.blockchain.microfab.builder;
+package ir.co.isc.spbp.blockchain.fabino.builder;
 
-import ir.co.isc.spbp.blockchain.microfab.MicrofabContainer;
-import ir.co.isc.spbp.blockchain.microfab.model.Config;
+import ir.co.isc.spbp.blockchain.fabino.MicrofabContainer;
+import ir.co.isc.spbp.blockchain.fabino.model.Config;
 
-import static ir.co.isc.spbp.blockchain.microfab.model.Config.Chaincode;
-import static ir.co.isc.spbp.blockchain.microfab.model.Config.Channel;
+import static ir.co.isc.spbp.blockchain.fabino.model.Config.Chaincode;
+import static ir.co.isc.spbp.blockchain.fabino.model.Config.Channel;
 
 /**
  * Abstraction for building and running chaincodes in a {@link MicrofabContainer}.

@@ -1,4 +1,4 @@
-package ir.co.isc.spbp.blockchain.microfab.model;
+package ir.co.isc.spbp.blockchain.fabino.model;
 
 import lombok.Builder;
 import lombok.Data;

@@ -1,8 +1,8 @@
-package ir.co.isc.spbp.blockchain.microfab.model;
+package ir.co.isc.spbp.blockchain.fabino.model;
 
-import ir.co.isc.spbp.blockchain.microfab.Microfab;
-import ir.co.isc.spbp.blockchain.microfab.builder.CcBuilder;
-import ir.co.isc.spbp.blockchain.microfab.builder.CcaasBuilder;
+import ir.co.isc.spbp.blockchain.fabino.Microfab;
+import ir.co.isc.spbp.blockchain.fabino.builder.CcBuilder;
+import ir.co.isc.spbp.blockchain.fabino.builder.CcaasBuilder;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
@@ -16,8 +16,8 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static ir.co.isc.spbp.blockchain.microfab.Microfab.Chaincode.Type.CCAAS;
-import static ir.co.isc.spbp.blockchain.microfab.utils.Util.toUnchecked;
+import static ir.co.isc.spbp.blockchain.fabino.Microfab.Chaincode.Type.CCAAS;
+import static ir.co.isc.spbp.blockchain.fabino.utils.Util.toUnchecked;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.nonNull;
 
@@ -407,9 +407,9 @@ public class Config {
 
         /**
          * Factory method to create a {@link Channel}
-         * instance from a {@link ir.co.isc.spbp.blockchain.microfab.Microfab.Channel} annotation.
+         * instance from a {@link ir.co.isc.spbp.blockchain.fabino.Microfab.Channel} annotation.
          *
-         * @param channel the {@link ir.co.isc.spbp.blockchain.microfab.Microfab.Channel} annotation
+         * @param channel the {@link ir.co.isc.spbp.blockchain.fabino.Microfab.Channel} annotation
          *                whose values should populate this object
          * @return a new {@link Channel} instance containing
          * the same configuration as the annotation
@@ -470,9 +470,9 @@ public class Config {
 
         /**
          * Factory method to create a {@link Tls}
-         * instance from a {@link ir.co.isc.spbp.blockchain.microfab.Microfab.Tls} annotation.
+         * instance from a {@link ir.co.isc.spbp.blockchain.fabino.Microfab.Tls} annotation.
          *
-         * @param tls the {@link ir.co.isc.spbp.blockchain.microfab.Microfab.Tls} annotation
+         * @param tls the {@link ir.co.isc.spbp.blockchain.fabino.Microfab.Tls} annotation
          *            whose values should populate this object
          * @return a new {@link Tls} instance containing
          * the same configuration as the annotation
@@ -550,7 +550,7 @@ public class Config {
      * Represents the configuration of a chaincode instance.
      * <p>
      * This class is a runtime-friendly equivalent of the
-     * {@link ir.co.isc.spbp.blockchain.microfab.Microfab.Chaincode} annotation,
+     * {@link ir.co.isc.spbp.blockchain.fabino.Microfab.Chaincode} annotation,
      * allowing the annotation’s properties to be captured in a
      * regular Java object for further use.
      * <p>
@@ -616,7 +616,7 @@ public class Config {
          * encapsulates the logic required to:
          * <ul>
          *   <li>Detect whether the chaincode is supported ({@link CcBuilder#detect}).</li>
-         *   <li>Build the chaincode inside a {@link ir.co.isc.spbp.blockchain.microfab.MicrofabContainer}
+         *   <li>Build the chaincode inside a {@link ir.co.isc.spbp.blockchain.fabino.MicrofabContainer}
          *       ({@link CcBuilder#build}).</li>
          *   <li>Run the chaincode as a service ({@link CcBuilder#run}).</li>
          * </ul>

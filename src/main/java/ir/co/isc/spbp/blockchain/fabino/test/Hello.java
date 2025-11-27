@@ -1,4 +1,4 @@
-package ir.co.isc.spbp.blockchain.microfab.test;
+package ir.co.isc.spbp.blockchain.fabino.test;
 
 import lombok.Data;
 import org.hyperledger.fabric.contract.annotation.DataType;

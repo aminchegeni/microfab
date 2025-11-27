@@ -1,4 +1,4 @@
-package ir.co.isc.spbp.blockchain.microfab.test;
+package ir.co.isc.spbp.blockchain.fabino.test;
 
 import org.hyperledger.fabric.contract.Context;
 import org.hyperledger.fabric.contract.ContractInterface;
