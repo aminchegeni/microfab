@@ -43,7 +43,7 @@ Fabino-Test abstracts all of this:
 
 2. **JUnit 5 Extension**  
    Annotate your test class
-   with [@Microfab](src/main/java/ir/co/isc/spbp/blockchain/microfab/Microfab.java).
+   with [@Microfab](src/main/java/ir/co/isc/spbp/blockchain/fabino/Microfab.java).
 
 3. **Chaincode Lifecycle**  
    Fabino-Test handles the full chaincode lifecycle automatically:
@@ -51,7 +51,7 @@ Fabino-Test abstracts all of this:
 
 4. **Dependency Injection**  
    Any field annotated
-   with [@Msp(org="...")](src/main/java/ir/co/isc/spbp/blockchain/microfab/Msp.java)
+   with [@Msp(org="...")](src/main/java/ir/co/isc/spbp/blockchain/fabino/Msp.java)
    gets injected with a **Fabric Gateway SDK** instance, ready to use.
 
 ---
