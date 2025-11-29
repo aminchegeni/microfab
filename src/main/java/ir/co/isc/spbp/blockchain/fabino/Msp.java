@@ -7,6 +7,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
@@ -21,7 +22,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *   <li>Construct a {@link org.hyperledger.fabric.client.Gateway} using the
  *       {@link org.hyperledger.fabric.client.identity.Identity} and
  *       {@link org.hyperledger.fabric.client.identity.Signer} for that organization.</li>
- *   <li>Inject the resulting {@code Gateway} instance into the annotated field
+ *   <li>Inject the resulting {@code Gateway} instance into the annotated fields or parameters
  *       before each test executes.</li>
  * </ol>
  *
@@ -51,7 +52,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *       connection info, identities, and signers.</li>
  * </ul>
  */
-@Target(FIELD)
+@Target({FIELD, PARAMETER})
 @Retention(RUNTIME)
 @Inherited
 public @interface Msp {

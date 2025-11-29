@@ -16,7 +16,6 @@ import java.io.ByteArrayInputStream;
 import java.lang.reflect.Field;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
@@ -25,6 +24,7 @@ import java.util.stream.Collectors;
 
 import static ir.co.isc.spbp.blockchain.fabino.utils.Util.toUnchecked;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Collections.emptyMap;
 import static java.util.Objects.isNull;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace;
 import static org.junit.jupiter.api.extension.ExtensionContext.Store;
@@ -33,7 +33,8 @@ import static org.junit.platform.commons.util.AnnotationUtils.findAnnotation;
 import static org.junit.platform.commons.util.ReflectionUtils.isRecordObject;
 import static org.junit.platform.commons.util.ReflectionUtils.makeAccessible;
 
-public class MicrofabExtension implements BeforeAllCallback, BeforeEachCallback, AfterEachCallback, AfterAllCallback {
+public class MicrofabExtension implements BeforeAllCallback, BeforeEachCallback, AfterEachCallback, AfterAllCallback,
+        ParameterResolver {
 
     private static final Namespace NAMESPACE = Namespace.create(MicrofabExtension.class);
     private static final String CONTAINER_KEY = "microfab.container";
@@ -41,7 +42,7 @@ public class MicrofabExtension implements BeforeAllCallback, BeforeEachCallback,
     private static final String STATE_KEY = "microfab.state";
     private static final String ADMINS_KEY = "microfab.admins";
     private static final String CONSOLE_KEY = "microfab.console";
-    private static final String GATEWAY_KEY = "microfab.gateway";
+    private static final String GATEWAY_KEY_PREFIX = "microfab.gateway";
 
     private static Optional<Microfab> findMicrofab(ExtensionContext context) {
         Optional<ExtensionContext> current = Optional.of(context);
@@ -93,7 +94,9 @@ public class MicrofabExtension implements BeforeAllCallback, BeforeEachCallback,
                                     if (builder.detect(chaincode)) {
                                         builder.build(container, channel, chaincode);
                                         builder.run(container, channel, chaincode);
-                                    }
+                                    }/* else {
+                                        // TODO: log warning or error hint to user for chaincode type misconfiguration
+                                    }*/
                                 }));
     }
 
@@ -119,7 +122,7 @@ public class MicrofabExtension implements BeforeAllCallback, BeforeEachCallback,
             assertSupportedType(field.getType());
             toUnchecked(
                     () -> {
-                        Config.Organization org = determineOrg(context, field);
+                        Config.Organization org = determineOrg(context, determineMspForField(field));
                         Gateway gateway = createGateway(context, org);
                         makeAccessible(field).set(instance, gateway);
                         return null;
@@ -140,8 +143,7 @@ public class MicrofabExtension implements BeforeAllCallback, BeforeEachCallback,
         }
     }
 
-    private static Config.Organization determineOrg(ExtensionContext context, Field field) {
-        Msp msp = determineMspForField(field);
+    private static Config.Organization determineOrg(ExtensionContext context, Msp msp) {
         String orgName = msp.org();
         if (orgName.isBlank()) {
             throw new ExtensionConfigurationException("@Msp.org must be specified");
@@ -163,17 +165,19 @@ public class MicrofabExtension implements BeforeAllCallback, BeforeEachCallback,
 
     @SuppressWarnings("unchecked")
     private static Gateway createGateway(ExtensionContext context, Config.Organization org) {
-        return toUnchecked(
-                () -> {
-                    Store store = context.getStore(NAMESPACE);
+        Store store = context.getStore(NAMESPACE);
+        String key = GATEWAY_KEY_PREFIX + "." + org.getName();
+        return store.getOrComputeIfAbsent(
+                key,
+                k -> toUnchecked(() -> {
                     Config config = store.getOrDefault(CONFIG_KEY, Config.class, Config.builder().build());
                     Config.Tls tls = config.getTls();
-                    Map<String, State.Identity> admins = store.getOrDefault(ADMINS_KEY, Map.class, Collections.emptyMap());
+                    Map<String, State.Identity> admins = store.getOrDefault(ADMINS_KEY, Map.class, emptyMap());
                     State.Identity admin = admins.get(org.getAdminId());
                     X509Certificate cert = Identities.readX509Certificate(admin.getCertificatePem());
                     Identity identity = new X509Identity(org.getLocalMspId(), cert);
-                    PrivateKey key = Identities.readPrivateKey(admin.getPrivateKeyPem());
-                    Signer signer = Signers.newPrivateKeySigner(key);
+                    PrivateKey privateKey = Identities.readPrivateKey(admin.getPrivateKeyPem());
+                    Signer signer = Signers.newPrivateKeySigner(privateKey);
                     ChannelCredentials credit;
                     if (tls.isEnabled()) {
                         credit = TlsChannelCredentials.newBuilder()
@@ -189,10 +193,9 @@ public class MicrofabExtension implements BeforeAllCallback, BeforeEachCallback,
                             .signer(signer)
                             .hash(Hash.SHA256)
                             .connection(grpcChannel);
-                    Gateway gateway = builder.connect();
-                    store.put(GATEWAY_KEY, gateway);
-                    return gateway;
-                });
+                    return builder.connect();
+                }),
+                Gateway.class);
     }
 
     @Override
@@ -213,12 +216,32 @@ public class MicrofabExtension implements BeforeAllCallback, BeforeEachCallback,
     @Override
     public void afterEach(ExtensionContext context) {
         // we do not need any implementation, because all closable resources
-        // will be stored in junit store and junit them on behalf of us.
+        // will be stored in junit store and junit close them on behalf of us.
     }
 
     @Override
     public void afterAll(ExtensionContext context) {
         // we do not need any implementation, because all closable resources
-        // will be stored in junit store and junit them on behalf of us.
+        // will be stored in junit store and junit close them on behalf of us.
+    }
+
+    @Override
+    public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext context) {
+        return parameterContext.isAnnotated(Msp.class)
+                && parameterContext.getParameter().getType().equals(Gateway.class);
+    }
+
+    @Override
+    public Object resolveParameter(ParameterContext parameterContext, ExtensionContext context)
+            throws ParameterResolutionException {
+        try {
+            return parameterContext.findAnnotation(Msp.class)
+                    .map(msp -> determineOrg(context, msp))
+                    .map(org -> createGateway(context, org))
+                    // This branch should never be reached if all required annotations and inputs are valid.
+                    .orElseThrow(() -> new ParameterResolutionException("can not create gateway!"));
+        } catch (ExtensionConfigurationException ece) {
+            throw new ParameterResolutionException(ece.getMessage(), ece);
+        }
     }
 }
