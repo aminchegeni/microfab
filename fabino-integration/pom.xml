@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>ir.co.isc.spbp.blockchain</groupId>
+        <artifactId>fabino-test</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>ir.co.isc.spbp.blockchain.fabino</groupId>
+    <artifactId>fabino-integration</artifactId>
+    <packaging>jar</packaging>
+    <name>integration</name>
+
+    <properties>
+        <!-- ~~~~~ project lib ver ~~~~~ -->
+        <version.lib.gateway>1.10.0</version.lib.gateway>
+        <version.lib.json>20250517</version.lib.json>
+        <version.lib.systemlambda>1.2.1</version.lib.systemlambda>
+        <version.lib.testcontainers>2.0.2</version.lib.testcontainers>
+        <version.lib.slf4j>1.7.36</version.lib.slf4j>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- https://mvnrepository.com/artifact/org.testcontainers/testcontainers-bom -->
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers-bom</artifactId>
+                <version>${version.lib.testcontainers}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.hyperledger.fabric/fabric-gateway -->
+        <dependency>
+            <groupId>org.hyperledger.fabric</groupId>
+            <artifactId>fabric-gateway</artifactId>
+            <version>${version.lib.gateway}</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.json/json -->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>${version.lib.json}</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.github.stefanbirkner/system-lambda -->
+        <dependency>
+            <groupId>com.github.stefanbirkner</groupId>
+            <artifactId>system-lambda</artifactId>
+            <version>${version.lib.systemlambda}</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.testcontainers/testcontainers -->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-simple -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${version.lib.slf4j}</version>
+        </dependency>
+    </dependencies>
+
+</project>
