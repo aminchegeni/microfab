@@ -48,7 +48,7 @@ import static java.util.stream.Collectors.toUnmodifiableMap;
  * @see Identity
  */
 @Data
-@Builder(builderClassName = "Builder")
+@Builder
 public class State {
 
     /**
@@ -138,7 +138,7 @@ public class State {
      * </p>
      */
     @Data
-    @lombok.Builder(builderClassName = "Builder")
+    @lombok.Builder
     public static class Identity implements Jsonable {
 
         /**

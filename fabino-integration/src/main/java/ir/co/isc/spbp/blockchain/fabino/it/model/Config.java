@@ -33,7 +33,7 @@ import static java.util.Objects.nonNull;
  * <a href="https://github.com/hyperledger-labs/microfab">Hyperledger Labs - Microfab</a>
  */
 @Data
-@Builder(builderClassName = "Builder")
+@Builder
 public class Config {
 
     /**
@@ -220,7 +220,7 @@ public class Config {
      * or an endorsing organization (hosting peers).
      */
     @Data
-    @lombok.Builder(builderClassName = "Builder")
+    @lombok.Builder
     public static class Organization {
 
         private static final Pattern NON_ALPHANUMERIC = Pattern.compile("[^a-zA-Z0-9]+");
@@ -365,7 +365,7 @@ public class Config {
      * that participate, and an optional capability level.
      */
     @Data
-    @lombok.Builder(builderClassName = "Builder")
+    @lombok.Builder
     public static class Channel {
 
         /**
@@ -432,7 +432,7 @@ public class Config {
      * certificate material can be provided.
      */
     @Data
-    @lombok.Builder(builderClassName = "Builder")
+    @lombok.Builder
     public static class Tls {
 
         /**
@@ -559,7 +559,7 @@ public class Config {
      * outside the static annotation context.
      */
     @Data
-    @lombok.Builder(builderClassName = "Builder")
+    @lombok.Builder
     public static class Chaincode {
 
         /**

@@ -39,7 +39,7 @@ import static ir.co.isc.spbp.blockchain.fabino.it.model.Config.Chaincode;
  * @see Chaincode
  */
 @Data
-@Builder(builderClassName = "Builder")
+@Builder
 public class Metadata implements Jsonable {
 
     /**

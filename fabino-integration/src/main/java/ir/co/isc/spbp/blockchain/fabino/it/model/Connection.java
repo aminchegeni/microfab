@@ -30,7 +30,7 @@ import static ir.co.isc.spbp.blockchain.fabino.it.model.Config.Chaincode;
  * compatible with the peer’s expectations for external/CCaaS chaincode connection.
  */
 @Data
-@Builder(builderClassName = "Builder")
+@Builder
 public class Connection implements Jsonable {
 
     /**
