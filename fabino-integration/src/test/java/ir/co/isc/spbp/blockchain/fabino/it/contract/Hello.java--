@@ -1,4 +1,4 @@
-package ir.co.isc.spbp.blockchain.fabino.it.test;
+package ir.co.isc.spbp.blockchain.fabino.it.contract;
 
 import lombok.Data;
 import org.hyperledger.fabric.contract.annotation.DataType;

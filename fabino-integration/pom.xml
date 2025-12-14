@@ -17,15 +17,35 @@
 
     <properties>
         <!-- ~~~~~ project lib ver ~~~~~ -->
+        <version.lib.protobuf>4.33.0</version.lib.protobuf>
+        <version.lib.grpc>1.76.0</version.lib.grpc>
         <version.lib.gateway>1.10.0</version.lib.gateway>
         <version.lib.json>20250517</version.lib.json>
         <version.lib.systemlambda>1.2.1</version.lib.systemlambda>
         <version.lib.testcontainers>2.0.2</version.lib.testcontainers>
         <version.lib.slf4j>1.7.36</version.lib.slf4j>
+        <!-- ~~~~~ mvn plugins ver ~~~~~ -->
+        <version.plugin.failsafe>3.5.4</version.plugin.failsafe>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <!-- https://mvnrepository.com/artifact/com.google.protobuf/protobuf-bom -->
+            <dependency>
+                <groupId>com.google.protobuf</groupId>
+                <artifactId>protobuf-bom</artifactId>
+                <version>${version.lib.protobuf}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/io.grpc/grpc-bom -->
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-bom</artifactId>
+                <version>${version.lib.grpc}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <!-- https://mvnrepository.com/artifact/org.testcontainers/testcontainers-bom -->
             <dependency>
                 <groupId>org.testcontainers</groupId>
@@ -72,5 +92,41 @@
             <version>${version.lib.slf4j}</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-failsafe-plugin -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>${version.plugin.failsafe}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                    <failIfNoTests>false</failIfNoTests>
+                    <argLine>
+                        -Dfile.encoding=${project.build.sourceEncoding}
+                        --add-opens=java.base/java.lang=ALL-UNNAMED
+                        --add-opens=java.base/java.util=ALL-UNNAMED
+                    </argLine>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>integration-test</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

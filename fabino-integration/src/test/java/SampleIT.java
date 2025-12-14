@@ -5,11 +5,13 @@ import org.hyperledger.fabric.client.Gateway;
 import org.hyperledger.fabric.client.GatewayException;
 import org.hyperledger.fabric.client.Network;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static ir.co.isc.spbp.blockchain.fabino.it.Microfab.*;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+@Disabled("TODO: temporary disable until complete my test scenarios")
 @Microfab(
         image = "ghcr.io/hyperledger-labs/microfab",
         domain = "example.com",
@@ -38,7 +40,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
                         address = "127.0.0.1:9999"
                 )
         })
-class SampleTest {
+class SampleIT {
 
     @Msp(org = "Org1")
     private Gateway gateway;

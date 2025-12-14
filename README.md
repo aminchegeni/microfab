@@ -88,7 +88,7 @@ Fabino-Test abstracts all of this:
                         address = "127.0.0.1:9999"
                 )
         })
-class SampleTest {
+class SampleIT {
 
     @Msp(org = "Org1")
     private Gateway gateway; // injected by Fabino-Test 🎉
