@@ -39,6 +39,7 @@
 
     <modules>
         <module>fabino-integration</module>
+        <module>fabino-unit</module>
     </modules>
 
     <properties>
