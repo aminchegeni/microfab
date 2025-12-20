@@ -17,9 +17,7 @@
 
     <properties>
         <!-- ~~~~~ project lib ver ~~~~~ -->
-        <version.lib.protobuf>4.33.0</version.lib.protobuf>
         <version.lib.grpc>1.76.0</version.lib.grpc>
-        <version.lib.gateway>1.10.0</version.lib.gateway>
         <version.lib.json>20250517</version.lib.json>
         <version.lib.systemlambda>1.2.1</version.lib.systemlambda>
         <version.lib.testcontainers>2.0.2</version.lib.testcontainers>
@@ -30,14 +28,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- https://mvnrepository.com/artifact/com.google.protobuf/protobuf-bom -->
-            <dependency>
-                <groupId>com.google.protobuf</groupId>
-                <artifactId>protobuf-bom</artifactId>
-                <version>${version.lib.protobuf}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
             <!-- https://mvnrepository.com/artifact/io.grpc/grpc-bom -->
             <dependency>
                 <groupId>io.grpc</groupId>
@@ -58,13 +48,6 @@
     </dependencyManagement>
 
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/org.hyperledger.fabric/fabric-gateway -->
-        <dependency>
-            <groupId>org.hyperledger.fabric</groupId>
-            <artifactId>fabric-gateway</artifactId>
-            <version>${version.lib.gateway}</version>
-            <scope>compile</scope>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/org.json/json -->
         <dependency>
             <groupId>org.json</groupId>

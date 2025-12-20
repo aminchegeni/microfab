@@ -47,8 +47,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <lombok.outputDirectory>${project.build.directory}/delombok</lombok.outputDirectory>
         <!-- ~~~~~ project lib ver ~~~~~ -->
-        <version.lib.shim>2.5.7</version.lib.shim>
+        <version.lib.protobuf>4.33.0</version.lib.protobuf>
         <version.lib.junit>5.14.1</version.lib.junit>
+        <version.lib.shim>2.5.7</version.lib.shim>
+        <version.lib.gateway>1.10.0</version.lib.gateway>
         <version.lib.lombok>1.18.42</version.lib.lombok>
         <!-- ~~~~~ mvn plugins ver ~~~~~ -->
         <version.plugin.compiler>3.14.1</version.plugin.compiler>
@@ -59,6 +61,14 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- https://mvnrepository.com/artifact/com.google.protobuf/protobuf-bom -->
+            <dependency>
+                <groupId>com.google.protobuf</groupId>
+                <artifactId>protobuf-bom</artifactId>
+                <version>${version.lib.protobuf}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <!-- https://mvnrepository.com/artifact/org.junit/junit-bom -->
             <dependency>
                 <groupId>org.junit</groupId>
@@ -78,6 +88,13 @@
             <version>${version.lib.shim}</version>
             <scope>compile</scope>
             <optional>true</optional>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.hyperledger.fabric/fabric-gateway -->
+        <dependency>
+            <groupId>org.hyperledger.fabric</groupId>
+            <artifactId>fabric-gateway</artifactId>
+            <version>${version.lib.gateway}</version>
+            <scope>compile</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
         <dependency>
