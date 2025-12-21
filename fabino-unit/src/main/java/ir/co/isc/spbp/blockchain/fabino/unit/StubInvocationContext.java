@@ -4,13 +4,10 @@ import com.google.protobuf.Timestamp;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
-import org.hyperledger.fabric.client.Hash;
 import org.hyperledger.fabric.shim.ChaincodeStub;
 
-import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.Collections;
-import java.util.HexFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,7 +17,6 @@ import java.util.stream.Stream;
 import static ir.co.isc.spbp.blockchain.fabino.unit.Stub.*;
 import static ir.co.isc.spbp.blockchain.fabino.unit.Stub.Chaincode.DEFAULT_CC_NAME;
 import static ir.co.isc.spbp.blockchain.fabino.unit.Stub.Chaincode.DEFAULT_CC_VERSION;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.function.Predicate.not;
 
 /**
@@ -123,39 +119,48 @@ public class StubInvocationContext {
     byte @NonNull [] nonce = nonce(new byte[0]);
 
     /**
-     * Computes a deterministic hash representing this invocation context.
-     * <p>
-     * The hash is derived from the textual representation of the context and
-     * produced using SHA-256, yielding a stable and collision-resistant key.
-     * <p>
-     * Intended for use as a unique identifier when storing data in a JUnit
-     * {@link org.junit.jupiter.api.extension.ExtensionContext.Store}, ensuring
-     * safe isolation between concurrent or repeated test executions.
+     * Creates a {@link StubInvocationContext} from a {@link Stub} annotation,
+     * resolving any template variables using the provided values.
      *
-     * @return hexadecimal SHA-256 hash of this invocation context
-     */
-    public String hash() {
-        return HexFormat.of().formatHex(Hash.SHA256.apply(toString().getBytes(UTF_8)));
-    }
-
-    /**
-     * Creates an invocation context from a {@link Stub} annotation.
+     * <p>All string-based attributes of the annotation (such as MSP ID, certificates,
+     * chaincode identifiers, function name, arguments, and transients) may contain
+     * template placeholders of the form {@code {{variable}}}. These placeholders are
+     * resolved against the supplied {@code variables} map before the invocation
+     * context is constructed.</p>
      *
-     * @param stub stub annotation defining invocation parameters
-     * @return resolved invocation context
+     * <p>Non-string attributes are handled according to their semantics:
+     * timestamp and nonce values are passed through the standard resolution logic,
+     * allowing default values to trigger dynamic behavior (current time or random
+     * nonce) when applicable.</p>
+     *
+     * <p>The resulting context fully describes a single deterministic (or intentionally
+     * non-deterministic) chaincode invocation and is suitable for use in stub creation,
+     * message construction, and test execution.</p>
+     *
+     * @param stub
+     *         the {@link Stub} annotation defining invocation parameters and defaults
+     * @param variables
+     *         a map of variable names to values used for template resolution
+     * @return a fully resolved invocation context derived from the annotation
+     * @throws NullPointerException
+     *         if {@code stub} or {@code variables} is {@code null}
      */
-    public static StubInvocationContext of(Stub stub) {
+    public static StubInvocationContext of(Stub stub, Map<String, Object> variables) {
+        var resolver = new TemplateVariableResolver();
         return StubInvocationContext.builder()
-                .mspId(stub.mspId())
-                .cert(stub.cert())
-                .key(stub.key())
+                .mspId(resolver.resolve(stub.mspId(), variables))
+                .cert(resolver.resolve(stub.cert(), variables))
+                .key(resolver.resolve(stub.key(), variables))
                 .chaincode(ChaincodeContext.builder()
-                        .name(stub.chaincode().name())
-                        .version(stub.chaincode().version())
+                        .name(resolver.resolve(stub.chaincode().name(), variables))
+                        .version(resolver.resolve(stub.chaincode().version(), variables))
                         .build())
-                .channel(stub.channel())
-                .args(Stream.concat(Stream.of(stub.function()), Stream.of(stub.args())).toList())
-                .transients(transients(stub.transients()))
+                .channel(resolver.resolve(stub.channel(), variables))
+                .args(Stream.concat(
+                        Stream.of(resolver.resolve(stub.function(), variables)),
+                        Stream.of(resolver.resolve(stub.args(), variables))
+                ).toList())
+                .transients(transients(resolver.resolve(stub.transients(), variables)))
                 .timestamp(timestamp(stub.timestamp()))
                 .nonce(nonce(stub.nonce()))
                 .build();

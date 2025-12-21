@@ -8,22 +8,26 @@ import org.junit.jupiter.api.extension.*;
 import org.junit.jupiter.params.support.FieldContext;
 import org.junit.platform.commons.JUnitException;
 import org.junit.platform.commons.support.AnnotationSupport;
+import org.junit.platform.commons.support.HierarchyTraversalMode;
 import org.junit.platform.commons.support.ModifierSupport;
 import org.junit.platform.commons.util.ExceptionUtils;
 
 import java.lang.reflect.*;
 import java.security.GeneralSecurityException;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
 import static java.util.Objects.nonNull;
+import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toMap;
 import static org.junit.jupiter.api.extension.ExtensionContext.*;
-import static org.junit.platform.commons.support.AnnotationSupport.findAnnotatedFields;
-import static org.junit.platform.commons.support.AnnotationSupport.findAnnotation;
+import static org.junit.platform.commons.support.AnnotationSupport.*;
 import static org.junit.platform.commons.support.ModifierSupport.isFinal;
-import static org.junit.platform.commons.support.ReflectionSupport.makeAccessible;
+import static org.junit.platform.commons.support.ModifierSupport.isStatic;
+import static org.junit.platform.commons.support.ReflectionSupport.*;
 import static org.junit.platform.commons.util.ReflectionUtils.isRecordObject;
 
 /**
@@ -204,6 +208,18 @@ public class StubExtension implements BeforeAllCallback, BeforeEachCallback, Par
         };
     }
 
+    private static Map<String, Object> resolveTemplateVariableContext(Class<?> clazz, Object instance) {
+        return streamFields(clazz, not(f -> isAnnotated(f, Stub.class)), HierarchyTraversalMode.TOP_DOWN)
+                .filter(f -> nonNull(instance) || isStatic(f))
+//                .filter(f -> String.class.isAssignableFrom(f.getType()))
+                .map(f -> Map.entry(f.getName(), tryToReadFieldValue(f, instance).toOptional()))
+                .filter(entry -> entry.getValue().isPresent())
+                .collect(
+                        toMap(
+                                Map.Entry::getKey,
+                                entry -> entry.getValue().get()));
+    }
+
     @Override
     public void beforeAll(ExtensionContext context) {
         findLedger(context);
@@ -258,7 +274,7 @@ public class StubExtension implements BeforeAllCallback, BeforeEachCallback, Par
             assertNonFinalField(field);
             assertSupportedType("field", field.getType());
 
-            StubInvocationContext invocationContext = determineInvocationContextForField(field);
+            StubInvocationContext invocationContext = determineInvocationContextForField(field, context);
             FieldContext fieldContext = createFieldContext(field);
             Store store = context.getStore(NAMESPACE.append(fieldContext));
             LedgerFacade ledger = getLedger(context, fieldContext);
@@ -273,13 +289,14 @@ public class StubExtension implements BeforeAllCallback, BeforeEachCallback, Par
         });
     }
 
-    private StubInvocationContext determineInvocationContextForField(Field field) {
+    private StubInvocationContext determineInvocationContextForField(Field field, ExtensionContext context) {
         Stub stub = findAnnotation(field, Stub.class)
                 .orElseThrow(() ->
                         new JUnitException(
                                 "Field %s must be annotated with @Stub".formatted(field)));
 
-        return determineStubInvocationContext(stub);
+        var variables = resolveTemplateVariableContext(context.getRequiredTestClass(), context.getTestInstance().orElse(null));
+        return determineStubInvocationContext(stub, variables);
     }
 
     private StubInvocationContext determineInvocationContextForParameter(ParameterContext context) {
@@ -288,11 +305,12 @@ public class StubExtension implements BeforeAllCallback, BeforeEachCallback, Par
                         new JUnitException(
                                 "Parameter %s must be annotated with @Stub".formatted(context.getParameter())));
 
-        return determineStubInvocationContext(stub);
+        var variables = resolveTemplateVariableContext(context.getDeclaringExecutable().getDeclaringClass(), context.getTarget().orElse(null));
+        return determineStubInvocationContext(stub, variables);
     }
 
-    private StubInvocationContext determineStubInvocationContext(Stub stub) {
-        return StubInvocationContext.of(stub);
+    private StubInvocationContext determineStubInvocationContext(Stub stub, Map<String, Object> variables) {
+        return StubInvocationContext.of(stub, variables);
     }
 
     /**
@@ -320,7 +338,18 @@ public class StubExtension implements BeforeAllCallback, BeforeEachCallback, Par
             if (ChaincodeStub.class.isAssignableFrom(clazz)) {
                 return stub;
             }
-            return new Context(stub);
+            if (Context.class.isAssignableFrom(clazz)) {
+                try {
+                    return clazz.getDeclaredConstructor(ChaincodeStub.class).newInstance(stub);
+                } catch (Exception e) {
+                    throw new ExtensionConfigurationException(
+                            ("An error occurred while creating %s. "
+                                    + "The class must be non-abstract and declare a constructor "
+                                    + "that accepts exactly one ChaincodeStub parameter.").formatted(clazz), e);
+                }
+            }
+            // keep compiler happy
+            return null;
         });
     }
 }
