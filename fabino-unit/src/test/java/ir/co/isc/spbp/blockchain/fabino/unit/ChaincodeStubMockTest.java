@@ -10,6 +10,7 @@ import org.hyperledger.fabric.protos.peer.ChaincodeEvent;
 import org.hyperledger.fabric.protos.peer.ChaincodeMessage;
 import org.hyperledger.fabric.protos.peer.SignedProposal;
 import org.hyperledger.fabric.shim.Chaincode;
+import org.hyperledger.fabric.shim.ChaincodeStub;
 import org.hyperledger.fabric.shim.ledger.CompositeKey;
 import org.hyperledger.fabric.shim.ledger.QueryResultsIteratorWithMetadata;
 import org.junit.jupiter.api.Test;
@@ -20,10 +21,10 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
+import static ir.co.isc.spbp.blockchain.fabino.unit.Utils.waitForCommit;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -85,7 +86,7 @@ class ChaincodeStubMockTest {
                     4, 5, 6, 7, 8, 9
             }
     )
-    private ChaincodeStubMock stub;
+    private ChaincodeStub stub;
 
     @Test
     void should_throwException_when_inputChaincodeMessageIsNotValid() {
@@ -145,15 +146,13 @@ class ChaincodeStubMockTest {
     }
 
     @Test
-    void should_returnUpdatedState_when_inputStateKeyExists(@Stub ChaincodeStubMock stub) {
+    void should_returnUpdatedState_when_inputStateKeyExists(@Stub ChaincodeStub stub) {
         byte[] old = stub.getState("key2");
         assertNotNull(old);
         stub.putState("key2", "val2".getBytes(UTF_8));
-        try {
-            TimeUnit.SECONDS.sleep(3L);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
+
+        waitForCommit();
+
         byte[] recent = stub.getState("key2");
         assertNotEquals(old.length, recent.length);
         assertEquals(2,
@@ -161,21 +160,19 @@ class ChaincodeStubMockTest {
     }
 
     @Test
-    void should_returnNull_when_inputStateKeyExistsAndThenDeleted(@Stub ChaincodeStubMock stub) {
+    void should_returnNull_when_inputStateKeyExistsAndThenDeleted(@Stub ChaincodeStub stub) {
         assertNotNull(stub.getState("key1"));
         stub.delState("key1");
-        try {
-            TimeUnit.SECONDS.sleep(3L);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
+
+        waitForCommit();
+
         assertNull(stub.getState("key1"));
         assertEquals(2,
                 StreamSupport.stream(stub.getHistoryForKey("key1").spliterator(), false).count());
     }
 
     @Test
-    void should_returnNull_when_inputStateKeyDoseNotExistAndThenDeleted(@Stub ChaincodeStubMock stub) {
+    void should_returnNull_when_inputStateKeyDoseNotExistAndThenDeleted(@Stub ChaincodeStub stub) {
         assertNull(stub.getState("key4"));
         stub.delState("key4");
         assertNull(stub.getState("key4"));

@@ -14,8 +14,8 @@ import static ir.co.isc.spbp.blockchain.fabino.unit.Utils.waitForCommit;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.*;
 
-// this ledger will be shared with all test methods in this class
-// be careful each change in this ledger will be visible in next test methods
+// This ledger is shared across all test methods in this class.
+// Any modification will persist and be visible to subsequent tests.
 @Ledger(
         scope = Scope.CLASS,
         worldState = Couchdb.class,
